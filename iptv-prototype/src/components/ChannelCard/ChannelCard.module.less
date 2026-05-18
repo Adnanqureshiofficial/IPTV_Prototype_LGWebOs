@@ -1,0 +1,30 @@
+.channelCard {
+	width: 320px;
+	height: 180px;
+
+	border-radius: 28px;
+
+	background: rgba(255,255,255,0.12);
+	backdrop-filter: blur(8px);
+
+	transition:
+		transform 0.18s ease,
+		box-shadow 0.18s ease;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.channelCard:focus {
+	transform: scale(1.06);
+
+	box-shadow:
+		0 0 22px rgba(255,255,255,0.5);
+}
+
+.channelName {
+	font-size: 32px;
+	font-weight: 600;
+	color: white;
+}
