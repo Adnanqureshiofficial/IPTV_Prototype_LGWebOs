@@ -4,17 +4,37 @@ You can save this as the canonical context/specification for the prototype phase
 
 1. Project Goal
 
-The current phase is NOT building the final hospitality IPTV platform.
+The current phase is building the final hospitality IPTV platform.
 
 The goal is ONLY:
 
-Validate whether a custom React + Enact TV UI can reliably run on LG webOS TVs with proper remote navigation and TV-focused UX.
+To build a custom TV solution(App that can be run on LG WebOS Smart TV as the default App(meaning our should be the standard launcher bypassing the lg standard UI on our commercial hotel tv)). 
+This solution needs to be compatible LG WebOS of the below mentioned specs.
 
-This is a:
+Description of the our App:
 
-runtime validation phase
-UX validation phase
-TV ergonomics phase
+Homepage (i mean Panel since tv does not have pages but we call them Panel.)
+So  
+1.HomePanel:
+UI description: A full sized background image with a Header(in semi transparent green color).
+On the left of header, it will display the greet message- Dear Mr.<guestName> (will be recieved from our local server(which recieves checkin string.)). on the right of header we can display, basic weather info like temperature and humidity.
+Then on the bottom we will have BottomDock in the semi transparent green color style. the dock will feature clickable navigation cards(utilizing the Button component of enact). each cards is acting as a link to other Panels.
+2.TV Channels Panel
+UI Description: a grid of tv channel icon cards. in center, starting from the top(leaving enough gutters and spacing) to 80% of the height. then below that again Dock. that will Category Cards- for tv channel categories. as per the active and selected category option. only those TV channels cards will be displayed. By default one category will be active when panel is loaded.
+TV Channel Icon Cards will be acting like a link. clicking them will request the LG WebOs via its exposed Luna API. to switch the TV source to HDMI(Since, Tata Sky SetUp box is connected to it.)
+Using the CEC feature(known as Simplink provided by LG). each icon will be mapped to a specific codde(TV channel number) that will be send to the Setup Box via HDMI CEC.We can use the LG's URC[Universal REmote COntrol Engine] . I am not quite aware of whether it would work. so thse are some options we can try.
+Option 1: Use the Commercial Universal Remote Control (URC) API (Recommended)Because the UQ801C0SB is part of LG's commercial line, it supports Universal Remote Control (URC) profiles. LG pre-programs the infrared (IR) and blast profiles for major global STBs (including Tata Play) directly into the TV's firmware.You can leverage the Commercial WebAPI / HCAP API to trigger these pre-mapped commands. Instead of sending raw CEC, your Enact app commands the TV to virtually press the numbers on the Tata Play remote using the TV's internal URC blaster module:Configure the TV manually first: Go to Settings > All Settings > General > Devices > External Devices > Universal Control Settings. Pair HDMI 1 with Tata Play / Tata Sky. Ensure the LG remote can control the STB.Use the Input Change API: Force the TV to switch focus to HDMI 1 using the webOS TV External Input API.Invoke the URC Command Keypad: Call the internal commercial API to simulate pressing digits sequentially.
+3. OTT Apps Panel.
+UI Description: Same UI design with a Dock at bottom. having cards arranged horizontall. each card are launcher links to OTT apps available on the TV.As for now, we will just have launcher links for Hotstar, Netflix, Amazon, Youtube, SonyLiv.
+
+All these Panels can be navigated from cards on Bottom Dock on Home Panel as mentioned above.
+Since we know enact manages these as stack we change index on clicks to navigate between panels.
+WE NEED TO ENSURE THAT THE DESIGN IS CREATED CONSIDERING IT IS FOR TVs THUS 10-FOOT DESIGN STYLE. LARGE FONT SIZES ANDN ICONS AND ALL.
+
+we will use full feature of enact and luna api provided by LG to interact with WebOs. since our App is just like a custom UI acting as  default launcher(Bypassing the standard LG[by doing some changes in LG TV settings]) and actual apps are on LG TV only.
+We will need to consider that LG TV remote navigation i.e our UI is compatible with spatial navigation and this ENact Framework comes into picture which handles all these thing seemlessly.
+
+As for now we will not create the backend just the frontend. and we will simulate API calls just for now once we are sure that okay that UI can be run then we will go for backend since it is complex build the backend and if UI is not compatible with TV then it will be wasted.   
 
 NOT:
 
@@ -26,7 +46,7 @@ production orchestration
 
 We are building:
 
-A frontend-only hospitality IPTV prototype for LG webOS TVs.
+A frontend-only hospitality IPTV  for LG webOS TVs.
 
 No backend yet.
 
@@ -41,7 +61,8 @@ React
 Enact
 Sandstone UI
 JavaScript
-webOS Simulator
+webOS Simulator(first will test on this then sideload the .ipk on the tv)
+WebOS cli tool to build the final app. 
 4. Why Enact Was Chosen
 
 Enact is specifically optimized for:
@@ -68,7 +89,7 @@ LG webOS TVs
 
 Current testing target:
 
-webOS simulator on laptop
+webOS simulator on laptop and TV
 
 Future deployment target:
 
@@ -315,7 +336,7 @@ Activates selected card.
 
 BACK / Escape
 
-Returns to previous panel.
+Returns to previous panel.(by default pressing back or home asks "Whether to exit the App popup" or Goes to LG home UI. we need to intercept this event and consume it with in our application to navigate to HOme pangel if home button pressed or previous panel if back pressed). THIS IS VERY CRUCIAL CONSTRAINT!!!
 
 20. Initial Focus Behavior
 
@@ -388,11 +409,6 @@ TV runtime behavior
 packaging compatibility
 webOS compatibility
 
-NOT:
-
-basic UI experimentation
-
-Browser iteration remains primary during MVP phase.
 
 26. Design Aesthetic
 
@@ -433,7 +449,7 @@ maintainable codebase
 
 The immediate milestone is:
 
-A fully navigable HomePanel using keyboard arrows that behaves naturally like a real LG TV interface.
+To build the above described UI as 
 
 This validates:
 
@@ -500,3 +516,5 @@ frontend architecture.
 
 If focus behavior feels unnatural:
 the entire TV UX immediately feels broken.
+
+Use the ENACT framework to its fullest!
